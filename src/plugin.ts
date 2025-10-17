@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import type { Plugin } from 'vite'
+import type { Plugin, UserConfig } from 'vite'
 import { generateSEOFiles, generateTypes } from './core/build-generator'
 import { createHMRHandlers } from './core/hmr-handlers'
 import { loadGeneratedManifest } from './core/manifest-loader'
@@ -29,6 +29,28 @@ export function w2bViteFileBasedRouting(rawOpts: Options = {}): Plugin {
 	const plugin: Plugin = {
 		name: 'vite-plugin-file-router-mwv',
 		enforce: 'pre',
+
+		// Автоматическая настройка Vite конфигурации
+		config(userConfig: UserConfig): UserConfig {
+			const existingAlias = userConfig.resolve?.alias
+			const existingExclude = userConfig.optimizeDeps?.exclude
+
+			// Безопасно мерджим с существующей конфигурацией
+			return {
+				optimizeDeps: {
+					exclude: [
+						...(Array.isArray(existingExclude) ? existingExclude : []),
+						'virtual:routes',
+					],
+				},
+				resolve: {
+					alias: {
+						...(typeof existingAlias === 'object' ? existingAlias : {}),
+						'virtual:routes': 'virtual:routes',
+					},
+				},
+			}
+		},
 
 		resolveId(id: string) {
 			if (id === VIRTUAL_ID) return RESOLVED_VIRTUAL_ID
