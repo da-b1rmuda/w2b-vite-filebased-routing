@@ -2,15 +2,20 @@
 	"name": "w2b-vite-filebased-routing",
 	"version": "1.0.0",
 	"description": "🚀 Простой и мощный плагин для Vite с file-based routing",
-	"main": "dist/index.js",
-	"module": "dist/index.mjs",
-	"types": "dist/types/index.d.ts",
+	"main": "dist/plugin.js",
+	"module": "dist/plugin.mjs",
+	"types": "dist/plugin.d.ts",
+	"type": "module",
 	"files": [
-		"dist"
+		"dist",
+		"README.md",
+		"LICENSE"
 	],
 	"scripts": {
 		"build": "tsup",
-		"dev": "tsup --watch"
+		"dev": "tsup --watch",
+		"prepublishOnly": "npm run build",
+		"type-check": "tsc --noEmit"
 	},
 	"keywords": [
 		"vite",
@@ -20,10 +25,28 @@
 		"router",
 		"typescript",
 		"seo",
-		"hmr"
+		"hmr",
+		"spa",
+		"routing",
+		"file-system",
+		"automatic-routes"
 	],
-	"author": "da_b1rmuda",
+	"author": {
+		"name": "da-b1rmuda",
+		"url": "https://github.com/da-b1rmuda"
+	},
 	"license": "MIT",
+	"homepage": "https://github.com/da-b1rmuda/w2b-vite-filebased-routing#readme",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/da-b1rmuda/w2b-vite-filebased-routing.git"
+	},
+	"bugs": {
+		"url": "https://github.com/da-b1rmuda/w2b-vite-filebased-routing/issues"
+	},
+	"engines": {
+		"node": ">=18.0.0"
+	},
 	"dependencies": {
 		"fast-glob": "^3.3.2"
 	},
@@ -32,6 +55,20 @@
 		"react-dom": "^18.0.0 || ^19.0.0",
 		"react-router-dom": "^6.0.0 || ^7.0.0",
 		"vite": "^5.0.0 || ^6.0.0 || ^7.0.0"
+	},
+	"peerDependenciesMeta": {
+		"react": {
+			"optional": false
+		},
+		"react-dom": {
+			"optional": false
+		},
+		"react-router-dom": {
+			"optional": false
+		},
+		"vite": {
+			"optional": false
+		}
 	},
 	"devDependencies": {
 		"@types/node": "^20.10.0",
@@ -58,6 +95,10 @@
 			"types": "./dist/core.d.ts",
 			"import": "./dist/core.mjs",
 			"require": "./dist/core.js"
-		}
+		},
+		"./package.json": "./package.json"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
