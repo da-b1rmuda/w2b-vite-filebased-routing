@@ -1,6 +1,6 @@
 {
 	"name": "w2b-vite-filebased-routing",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"description": "🚀 Простой и мощный плагин для Vite с file-based routing",
 	"main": "dist/plugin.js",
 	"module": "dist/plugin.mjs",
