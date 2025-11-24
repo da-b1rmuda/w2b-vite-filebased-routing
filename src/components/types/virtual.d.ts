@@ -10,6 +10,7 @@ declare module 'virtual:routes' {
 	}
 
 	export const manifest: RouteNode[]
+	export const basePath: string
 	const defaultExport: RouteNode[]
 	export default defaultExport
 }

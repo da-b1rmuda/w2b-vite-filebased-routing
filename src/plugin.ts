@@ -16,6 +16,7 @@ export function w2bViteFileBasedRouting(rawOpts: Options = {}): Plugin {
 		layoutFileName: rawOpts.layoutFileName ?? 'layout',
 		extensions: rawOpts.extensions ?? ['tsx'],
 		baseUrl: rawOpts.baseUrl ?? 'http://localhost:5173',
+		basePath: rawOpts.basePath ?? '/',
 		disallowPaths: rawOpts.disallowPaths ?? [],
 		generateTypes: rawOpts.generateTypes ?? true,
 		enableSEO: rawOpts.enableSEO ?? true,

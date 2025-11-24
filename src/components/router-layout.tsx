@@ -7,8 +7,9 @@ export const RouterLayout = ({
 	manifest,
 	children,
 	preloader,
+	basePath = '/',
 }: RouterLayoutProps) => (
-	<BrowserRouter>
+	<BrowserRouter basename={basePath}>
 		<React.Suspense fallback={children || preloader || <div>Loading...</div>}>
 			<Routes>{renderManifestAsRoutes(manifest)}</Routes>
 		</React.Suspense>

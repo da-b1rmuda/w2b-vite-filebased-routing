@@ -22,6 +22,8 @@ export async function generateVirtualModuleCode(
 	return `// Auto-generated routes manifest
 const manifest = [${entries.join(',\n')}];
 
+export const basePath = ${JSON.stringify(opts.basePath ?? '/')};
+
 export { manifest };
 export default manifest;
 `

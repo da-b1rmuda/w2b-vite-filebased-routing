@@ -8,9 +8,14 @@ export async function loadGeneratedManifest(root: string): Promise<string> {
 			const manifestContent = fs.readFileSync(manifestPath, 'utf-8')
 			const manifestRegex = /export const manifest = \[.*?\];/s
 			const manifestMatch = manifestRegex.exec(manifestContent)
+			const basePathRegex = /export const basePath = ['"](.*?)['"];/
+			const basePathMatch = basePathRegex.exec(manifestContent)
+			const basePath = basePathMatch ? basePathMatch[1] : '/'
+			
 			if (manifestMatch) {
 				return `// virtual routes (production mode - using generated manifest)
 ${manifestMatch[0]}
+export const basePath = ${JSON.stringify(basePath)};
 export default manifest;
 `
 			}
@@ -25,6 +30,7 @@ export default manifest;
 	// Fallback - пустой манифест
 	return `// virtual routes (production mode - empty manifest)
 export const manifest = [];
+export const basePath = '/';
 export default manifest;
 `
 }

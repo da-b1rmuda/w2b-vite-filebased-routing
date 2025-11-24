@@ -18,6 +18,7 @@ export type RouterLayoutProps = {
 	manifest: Node[]
 	children?: React.ReactNode
 	preloader?: React.ReactNode
+	basePath?: string
 }
 
 export type RouterProviderProps = {
@@ -32,5 +33,19 @@ export type RouterProviderProps = {
 	 * <div>Loading...</div>
 	 */
 	preloader?: React.ReactNode
+	/**
+	 * 📍 Базовый путь для маршрутизации
+	 *
+	 * ▸ Используется для работы нескольких фронтендов на одном домене
+	 *
+	 * ▸ Переопределяет basePath из конфигурации плагина
+	 *
+	 * @example '/' - основной сайт
+	 * @example '/admin' - админка на /admin/*
+	 * @example '/app' - приложение на /app/*
+	 *
+	 * @default '/'
+	 */
+	basePath?: string
 	children?: React.ReactNode
 }
