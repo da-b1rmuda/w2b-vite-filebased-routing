@@ -22,9 +22,11 @@ export function filePathToRoute(
 	const rel = slash(path.relative(resolvedPagesDir, filePath))
 	const dir = path.dirname(rel)
 	const parts = dir === '.' ? [] : dir.split('/').filter(Boolean)
-	// Фильтруем группы маршрутов (папки в скобках)
+	// 1. Выбрасываем группы маршрутов (auth), (shop) …
+	// 2. Добавляем фильтр папок, начинающихся с _
 	const filteredParts = parts.filter(
-		part => !part.startsWith('(') || !part.endsWith(')')
+		part =>
+			(!part.startsWith('(') || !part.endsWith(')')) && !part.startsWith('_')
 	)
 	const segments = filteredParts.map(segmentToRoute)
 	const route = '/' + segments.join('/')
