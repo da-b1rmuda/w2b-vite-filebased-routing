@@ -9,7 +9,7 @@ import { generateVirtualModuleCode } from './core/virtual-module'
 
 export type { Options } from './core/types/types'
 
-export function w2bViteFileBasedRouting(rawOpts: Options = {}): Plugin {
+export function pathRushRouting(rawOpts: Options = {}): Plugin {
 	const opts: Required<Options> = {
 		pagesDir: rawOpts.pagesDir ?? 'src/pages',
 		pageFileName: rawOpts.pageFileName ?? 'page',
