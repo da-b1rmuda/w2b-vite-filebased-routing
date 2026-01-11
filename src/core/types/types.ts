@@ -127,6 +127,29 @@ export type Options = {
 	 * @default true
 	 */
 	enableSEO?: boolean
+	/**
+	 * 📱 Конфигурация breakpoints для адаптивных layouts
+	 *
+	 * ▸ Определяет условия для mobile-layout.tsx и pc-layout.tsx
+	 *
+	 * ▸ layout.tsx используется как fallback
+	 *
+	 * @example
+	 * {
+	 *   mobile: { max: 720 },
+	 *   pc: { min: 1200 }
+	 * }
+	 *
+	 * @default undefined (layouts не адаптивные)
+	 */
+	breakpoints?: {
+		mobile?: {
+			max?: number
+		}
+		pc?: {
+			min?: number
+		}
+	}
 }
 
 export type ExportType = 'default' | 'named'
@@ -138,6 +161,8 @@ export type RouteEntry = {
 	loader: string
 	exportType: ExportType
 	layouts: string[]
+	layoutsMobile?: string[]
+	layoutsPC?: string[]
 	loading?: string
 	notFound?: string
 	error?: string

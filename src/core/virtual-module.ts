@@ -1,6 +1,9 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import { createRouteEntry } from './route-generator'
 import { scanPages } from './scanner'
 import type { Options } from './types/types'
+import { slash } from './utils'
 
 export async function generateVirtualModuleCode(
 	resolvedPagesDir: string,
@@ -16,6 +19,8 @@ export async function generateVirtualModuleCode(
       loader: ${entry.loader},
       exportType: ${JSON.stringify(entry.exportType)},
       layouts: [${entry.layouts.join(',')}],
+      ${entry.layoutsMobile ? `layoutsMobile: [${entry.layoutsMobile.join(',')}],` : ''}
+      ${entry.layoutsPC ? `layoutsPC: [${entry.layoutsPC.join(',')}],` : ''}
       ${entry.loading ? `loading: ${entry.loading},` : ''}
       ${entry.notFound ? `notFound: ${entry.notFound},` : ''}
       ${entry.error ? `error: ${entry.error},` : ''}
@@ -40,6 +45,7 @@ const manifest = [${entries.join(',\n')}];
 
 export const basePath = ${JSON.stringify(opts.basePath ?? '/')};
 ${globalNotFound ? `export const globalNotFound = ${globalNotFound};` : 'export const globalNotFound = undefined;'}
+export const breakpoints = ${JSON.stringify(opts.breakpoints ?? null)};
 
 export { manifest };
 export default manifest;

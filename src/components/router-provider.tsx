@@ -1,5 +1,6 @@
 import {
 	basePath as configBasePath,
+	breakpoints as configBreakpoints,
 	globalNotFound,
 	manifest,
 } from 'virtual:routes'
@@ -12,9 +13,12 @@ export default function RouterProvider({
 	basePath,
 	enableTransitions,
 	transitionConfig,
+	breakpoints,
 }: Readonly<RouterProviderProps>) {
 	// Используем basePath из пропсов, если указан, иначе из конфигурации
 	const finalBasePath = basePath ?? configBasePath ?? '/'
+	// Используем breakpoints из пропсов, если указаны, иначе из конфигурации
+	const finalBreakpoints = breakpoints ?? configBreakpoints ?? undefined
 	
 	return (
 		<RouterLayout
@@ -24,6 +28,7 @@ export default function RouterProvider({
 			globalNotFound={globalNotFound}
 			enableTransitions={enableTransitions}
 			transitionConfig={transitionConfig}
+			breakpoints={finalBreakpoints}
 		>
 			{children}
 		</RouterLayout>

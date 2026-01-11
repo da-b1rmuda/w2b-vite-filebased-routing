@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { collectLayouts, findSpecialFile } from './scanner'
+import { collectLayouts, collectAdaptiveLayouts, findSpecialFile } from './scanner'
 import type { Options, RouteEntry } from './types/types'
 import { detectExportType, slash } from './utils'
 
@@ -48,6 +48,20 @@ export function createRouteEntry(
 		lp => `() => import(${JSON.stringify(slash(lp))})`
 	)
 
+	// Адаптивные layouts (если breakpoints настроены)
+	let layoutsMobile: string[] | undefined
+	let layoutsPC: string[] | undefined
+	
+	if (opts.breakpoints) {
+		const adaptiveLayouts = collectAdaptiveLayouts(filePath, resolvedPagesDir, opts)
+		layoutsMobile = adaptiveLayouts.mobile.map(
+			lp => `() => import(${JSON.stringify(slash(lp))})`
+		)
+		layoutsPC = adaptiveLayouts.pc.map(
+			lp => `() => import(${JSON.stringify(slash(lp))})`
+		)
+	}
+
 	// Ищем специальные файлы
 	const loading = findSpecialFile(filePath, resolvedPagesDir, opts, 'loading')
 	const notFound = findSpecialFile(filePath, resolvedPagesDir, opts, 'not-found')
@@ -60,6 +74,8 @@ export function createRouteEntry(
 		loader,
 		exportType,
 		layouts,
+		layoutsMobile,
+		layoutsPC,
 		loading: loading ? `() => import(${JSON.stringify(slash(loading))})` : undefined,
 		notFound: notFound ? `() => import(${JSON.stringify(slash(notFound))})` : undefined,
 		error: error ? `() => import(${JSON.stringify(slash(error))})` : undefined,

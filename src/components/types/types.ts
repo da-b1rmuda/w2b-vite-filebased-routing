@@ -12,6 +12,12 @@ export type Node = {
 	layouts?: Array<
 		() => Promise<{ default: LayoutComponent } | { Layout: LayoutComponent }>
 	>
+	layoutsMobile?: Array<
+		() => Promise<{ default: LayoutComponent } | { Layout: LayoutComponent }>
+	>
+	layoutsPC?: Array<
+		() => Promise<{ default: LayoutComponent } | { Layout: LayoutComponent }>
+	>
 	loading?: () => Promise<{ default: React.ComponentType }>
 	notFound?: () => Promise<{ default: React.ComponentType }>
 	error?: () => Promise<{ default: React.ComponentType<{ error?: Error; resetError?: () => void }> }>
@@ -32,6 +38,14 @@ export type RouterLayoutProps = {
 		duration?: number
 		mode?: 'fade' | 'slide' | 'custom'
 		onTransition?: (direction: 'enter' | 'exit') => void
+	}
+	breakpoints?: {
+		mobile?: {
+			max?: number
+		}
+		pc?: {
+			min?: number
+		}
 	}
 }
 
@@ -86,6 +100,27 @@ export type RouterProviderProps = {
 		duration?: number
 		mode?: 'fade' | 'slide' | 'custom'
 		onTransition?: (direction: 'enter' | 'exit') => void
+	}
+	/**
+	 * 📱 Конфигурация breakpoints для адаптивных layouts
+	 *
+	 * ▸ Переопределяет breakpoints из конфигурации плагина
+	 *
+	 * ▸ Используется для выбора mobile-layout.tsx или pc-layout.tsx
+	 *
+	 * @example
+	 * {
+	 *   mobile: { max: 720 },
+	 *   pc: { min: 1200 }
+	 * }
+	 */
+	breakpoints?: {
+		mobile?: {
+			max?: number
+		}
+		pc?: {
+			min?: number
+		}
 	}
 	children?: React.ReactNode
 }

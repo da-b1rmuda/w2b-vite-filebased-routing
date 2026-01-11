@@ -48,6 +48,68 @@ export function collectLayouts(
 }
 
 /**
+ * Собирает адаптивные layouts (mobile, pc, default)
+ */
+export function collectAdaptiveLayouts(
+	filePath: string,
+	resolvedPagesDir: string,
+	opts: Required<Options>
+): {
+	default: string[]
+	mobile: string[]
+	pc: string[]
+} {
+	const rel = slash(path.relative(resolvedPagesDir, filePath))
+	const dir = path.dirname(rel)
+	const parts = dir === '.' ? [] : dir.split('/').filter(Boolean)
+
+	const layouts = {
+		default: [] as string[],
+		mobile: [] as string[],
+		pc: [] as string[],
+	}
+
+	// for each level from 0..parts.length include layouts if exists
+	for (let i = 0; i <= parts.length; i++) {
+		const p = parts.slice(0, i).join('/')
+		
+		for (const ext of opts.extensions) {
+			// Обычный layout (fallback)
+			const defaultLayout = path.resolve(
+				resolvedPagesDir,
+				p || '',
+				`${opts.layoutFileName}.${ext}`
+			)
+			if (fs.existsSync(defaultLayout)) {
+				layouts.default.push(defaultLayout)
+			}
+
+			// Mobile layout
+			const mobileLayout = path.resolve(
+				resolvedPagesDir,
+				p || '',
+				`mobile-${opts.layoutFileName}.${ext}`
+			)
+			if (fs.existsSync(mobileLayout)) {
+				layouts.mobile.push(mobileLayout)
+			}
+
+			// PC layout
+			const pcLayout = path.resolve(
+				resolvedPagesDir,
+				p || '',
+				`pc-${opts.layoutFileName}.${ext}`
+			)
+			if (fs.existsSync(pcLayout)) {
+				layouts.pc.push(pcLayout)
+			}
+		}
+	}
+
+	return layouts
+}
+
+/**
  * Находит файл loading, not-found или error в директории страницы
  */
 export function findSpecialFile(

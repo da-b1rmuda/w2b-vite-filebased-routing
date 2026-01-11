@@ -1,7 +1,9 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
 import { ErrorBoundary } from './error-boundary'
+import { useBreakpoint } from './hooks/use-breakpoint'
 import type { Node } from './types/types'
+import type { BreakpointConfig } from './hooks/use-breakpoint'
 
 function wrapLayouts(
 	layouts: Node['layouts'] | undefined,
@@ -17,6 +19,34 @@ function wrapLayouts(
 		})
 		return <Layout>{child}</Layout>
 	}, pageEl as React.ReactElement)
+}
+
+function AdaptiveLayoutWrapper({
+	layouts,
+	layoutsMobile,
+	layoutsPC,
+	pageEl,
+	breakpoints,
+}: {
+	layouts: Node['layouts'] | undefined
+	layoutsMobile: Node['layoutsMobile'] | undefined
+	layoutsPC: Node['layoutsPC'] | undefined
+	pageEl: React.ReactNode
+	breakpoints?: BreakpointConfig
+}) {
+	const breakpoint = useBreakpoint(breakpoints)
+	
+	// Выбираем layouts в зависимости от breakpoint
+	let activeLayouts = layouts
+	
+	if (breakpoint === 'mobile' && layoutsMobile && layoutsMobile.length > 0) {
+		activeLayouts = layoutsMobile
+	} else if (breakpoint === 'pc' && layoutsPC && layoutsPC.length > 0) {
+		activeLayouts = layoutsPC
+	}
+	// Если breakpoint === 'default' или нет адаптивных layouts, используем обычные layouts
+	
+	return <>{wrapLayouts(activeLayouts, pageEl)}</>
 }
 
 function createLoadingFallback(loadingLoader?: () => Promise<{ default: React.ComponentType }>) {
@@ -36,7 +66,8 @@ function createErrorFallback(errorLoader?: () => Promise<{ default: React.Compon
 
 export const renderManifestAsRoutes = (
 	manifest: Node[],
-	globalNotFound?: () => Promise<{ default: React.ComponentType }>
+	globalNotFound?: () => Promise<{ default: React.ComponentType }>,
+	breakpoints?: BreakpointConfig
 ) => {
 	return manifest.map(n => {
 		const Page = React.lazy(async () => {
@@ -83,7 +114,18 @@ export const renderManifestAsRoutes = (
 		const loadingFallback = createLoadingFallback(n.loading)
 		const errorFallback = createErrorFallback(n.error)
 		
-		const pageElement = wrapLayouts(n.layouts, <Page />)
+		// Используем адаптивные layouts если они есть и breakpoints настроены
+		const pageElement = breakpoints && (n.layoutsMobile || n.layoutsPC) ? (
+			<AdaptiveLayoutWrapper
+				layouts={n.layouts}
+				layoutsMobile={n.layoutsMobile}
+				layoutsPC={n.layoutsPC}
+				pageEl={<Page />}
+				breakpoints={breakpoints}
+			/>
+		) : (
+			wrapLayouts(n.layouts, <Page />)
+		)
 		
 		// Оборачиваем в ErrorBoundary если есть error компонент
 		const wrappedElement = errorFallback ? (

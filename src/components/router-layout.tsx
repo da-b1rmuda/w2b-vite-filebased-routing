@@ -3,6 +3,7 @@ import { BrowserRouter, Routes } from 'react-router-dom'
 import { RouteTransition } from './route-transition'
 import { renderManifestAsRoutes } from './router-utils'
 import type { RouterLayoutProps } from './types/types'
+import type { BreakpointConfig } from './hooks/use-breakpoint'
 
 export const RouterLayout = ({
 	manifest,
@@ -12,8 +13,9 @@ export const RouterLayout = ({
 	globalNotFound,
 	enableTransitions = false,
 	transitionConfig,
+	breakpoints,
 }: RouterLayoutProps) => {
-	const routes = renderManifestAsRoutes(manifest, globalNotFound)
+	const routes = renderManifestAsRoutes(manifest, globalNotFound, breakpoints)
 	const routesElement = <Routes>{routes}</Routes>
 
 	return (
