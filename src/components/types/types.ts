@@ -23,6 +23,16 @@ export type RouterLayoutProps = {
 	preloader?: React.ReactNode
 	basePath?: string
 	globalNotFound?: () => Promise<{ default: React.ComponentType }>
+	enableTransitions?: boolean
+	transitionConfig?: {
+		enterClass?: string
+		enterActiveClass?: string
+		exitClass?: string
+		exitActiveClass?: string
+		duration?: number
+		mode?: 'fade' | 'slide' | 'custom'
+		onTransition?: (direction: 'enter' | 'exit') => void
+	}
 }
 
 export type RouterProviderProps = {
@@ -51,5 +61,31 @@ export type RouterProviderProps = {
 	 * @default '/'
 	 */
 	basePath?: string
+	/**
+	 * 🎬 Включить анимации переходов между страницами
+	 *
+	 * ▸ Если true, страницы будут анимироваться при переключении
+	 *
+	 * ▸ Можно настроить через transitionConfig
+	 *
+	 * @default false
+	 */
+	enableTransitions?: boolean
+	/**
+	 * ⚙️ Конфигурация анимаций переходов
+	 *
+	 * ▸ Настройка CSS классов и параметров анимации
+	 *
+	 * ▸ Если не указано, используются значения по умолчанию
+	 */
+	transitionConfig?: {
+		enterClass?: string
+		enterActiveClass?: string
+		exitClass?: string
+		exitActiveClass?: string
+		duration?: number
+		mode?: 'fade' | 'slide' | 'custom'
+		onTransition?: (direction: 'enter' | 'exit') => void
+	}
 	children?: React.ReactNode
 }

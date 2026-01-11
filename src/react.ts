@@ -2,6 +2,7 @@
 export { Link } from './components/link'
 export { NavLink } from './components/nav-link'
 export { Navigate } from './components/navigate'
+export { RouteTransition } from './components/route-transition'
 export { default as RouterProvider } from './components/router-provider'
 
 // Хуки
@@ -22,4 +23,5 @@ export type {
 	To,
 } from './components/types/router-types'
 
+export type { RouteTransitionProps } from './components/route-transition'
 export type { RouterProviderProps } from './components/types/types'

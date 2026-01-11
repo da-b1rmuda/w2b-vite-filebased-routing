@@ -10,6 +10,8 @@ export default function RouterProvider({
 	children,
 	preloader,
 	basePath,
+	enableTransitions,
+	transitionConfig,
 }: Readonly<RouterProviderProps>) {
 	// Используем basePath из пропсов, если указан, иначе из конфигурации
 	const finalBasePath = basePath ?? configBasePath ?? '/'
@@ -20,6 +22,8 @@ export default function RouterProvider({
 			preloader={preloader}
 			basePath={finalBasePath}
 			globalNotFound={globalNotFound}
+			enableTransitions={enableTransitions}
+			transitionConfig={transitionConfig}
 		>
 			{children}
 		</RouterLayout>
