@@ -33,6 +33,36 @@ export type Options = {
 	 */
 	layoutFileName?: string
 	/**
+	 * ⏳ Имя файла loading
+	 *
+	 * ▸ Файлы с этим именем используются как Suspense fallback
+	 *
+	 * ▸ Показываются во время загрузки страницы
+	 *
+	 * @default 'loading'
+	 */
+	loadingFileName?: string
+	/**
+	 * ❌ Имя файла not-found
+	 *
+	 * ▸ Файлы с этим именем используются для 404 страниц
+	 *
+	 * ▸ Показываются когда маршрут не найден
+	 *
+	 * @default 'not-found'
+	 */
+	notFoundFileName?: string
+	/**
+	 * ⚠️ Имя файла error
+	 *
+	 * ▸ Файлы с этим именем используются как ErrorBoundary
+	 *
+	 * ▸ Показываются при ошибке рендеринга
+	 *
+	 * @default 'error'
+	 */
+	errorFileName?: string
+	/**
 	 * 🎯 Расширения файлов
 	 *
 	 * ▸ Определяет типы файлов для обработки
@@ -108,6 +138,9 @@ export type RouteEntry = {
 	loader: string
 	exportType: ExportType
 	layouts: string[]
+	loading?: string
+	notFound?: string
+	error?: string
 }
 
 export interface PageMetadata {

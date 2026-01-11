@@ -46,3 +46,46 @@ export function collectLayouts(
 	}
 	return layouts
 }
+
+/**
+ * Находит файл loading, not-found или error в директории страницы
+ */
+export function findSpecialFile(
+	filePath: string,
+	resolvedPagesDir: string,
+	opts: Required<Options>,
+	fileName: 'loading' | 'not-found' | 'error'
+): string | undefined {
+	const rel = slash(path.relative(resolvedPagesDir, filePath))
+	const dir = path.dirname(rel)
+	
+	// Ищем файл в той же директории, что и страница
+	for (const ext of opts.extensions) {
+		const candidate = path.resolve(
+			resolvedPagesDir,
+			dir === '.' ? '' : dir,
+			`${opts[`${fileName}FileName` as keyof typeof opts]}.${ext}`
+		)
+		if (fs.existsSync(candidate)) {
+			return candidate
+		}
+	}
+	
+	// Если не найден, ищем в родительских директориях (как layouts)
+	const parts = dir === '.' ? [] : dir.split('/').filter(Boolean)
+	for (let i = parts.length; i >= 0; i--) {
+		const p = parts.slice(0, i).join('/')
+		for (const ext of opts.extensions) {
+			const candidate = path.resolve(
+				resolvedPagesDir,
+				p || '',
+				`${opts[`${fileName}FileName` as keyof typeof opts]}.${ext}`
+			)
+			if (fs.existsSync(candidate)) {
+				return candidate
+			}
+		}
+	}
+	
+	return undefined
+}

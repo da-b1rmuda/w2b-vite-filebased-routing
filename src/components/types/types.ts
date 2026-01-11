@@ -12,6 +12,9 @@ export type Node = {
 	layouts?: Array<
 		() => Promise<{ default: LayoutComponent } | { Layout: LayoutComponent }>
 	>
+	loading?: () => Promise<{ default: React.ComponentType }>
+	notFound?: () => Promise<{ default: React.ComponentType }>
+	error?: () => Promise<{ default: React.ComponentType<{ error?: Error; resetError?: () => void }> }>
 }
 
 export type RouterLayoutProps = {
@@ -19,6 +22,7 @@ export type RouterLayoutProps = {
 	children?: React.ReactNode
 	preloader?: React.ReactNode
 	basePath?: string
+	globalNotFound?: () => Promise<{ default: React.ComponentType }>
 }
 
 export type RouterProviderProps = {

@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { collectLayouts } from './scanner'
+import { collectLayouts, findSpecialFile } from './scanner'
 import type { Options, RouteEntry } from './types/types'
 import { detectExportType, slash } from './utils'
 
@@ -48,6 +48,11 @@ export function createRouteEntry(
 		lp => `() => import(${JSON.stringify(slash(lp))})`
 	)
 
+	// Ищем специальные файлы
+	const loading = findSpecialFile(filePath, resolvedPagesDir, opts, 'loading')
+	const notFound = findSpecialFile(filePath, resolvedPagesDir, opts, 'not-found')
+	const error = findSpecialFile(filePath, resolvedPagesDir, opts, 'error')
+
 	return {
 		id,
 		path: route,
@@ -55,5 +60,8 @@ export function createRouteEntry(
 		loader,
 		exportType,
 		layouts,
+		loading: loading ? `() => import(${JSON.stringify(slash(loading))})` : undefined,
+		notFound: notFound ? `() => import(${JSON.stringify(slash(notFound))})` : undefined,
+		error: error ? `() => import(${JSON.stringify(slash(error))})` : undefined,
 	}
 }

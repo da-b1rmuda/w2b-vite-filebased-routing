@@ -1,4 +1,8 @@
-import { manifest, basePath as configBasePath } from 'virtual:routes'
+import {
+	basePath as configBasePath,
+	globalNotFound,
+	manifest,
+} from 'virtual:routes'
 import { RouterLayout } from './router-layout'
 import type { RouterProviderProps } from './types/types'
 
@@ -11,7 +15,12 @@ export default function RouterProvider({
 	const finalBasePath = basePath ?? configBasePath ?? '/'
 	
 	return (
-		<RouterLayout manifest={manifest} preloader={preloader} basePath={finalBasePath}>
+		<RouterLayout
+			manifest={manifest}
+			preloader={preloader}
+			basePath={finalBasePath}
+			globalNotFound={globalNotFound}
+		>
 			{children}
 		</RouterLayout>
 	)

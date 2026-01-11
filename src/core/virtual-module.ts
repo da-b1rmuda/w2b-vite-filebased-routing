@@ -15,14 +15,31 @@ export async function generateVirtualModuleCode(
       filePath: ${JSON.stringify(entry.filePath)},
       loader: ${entry.loader},
       exportType: ${JSON.stringify(entry.exportType)},
-      layouts: [${entry.layouts.join(',')}]
+      layouts: [${entry.layouts.join(',')}],
+      ${entry.loading ? `loading: ${entry.loading},` : ''}
+      ${entry.notFound ? `notFound: ${entry.notFound},` : ''}
+      ${entry.error ? `error: ${entry.error},` : ''}
     }`
 	})
+
+	// Ищем глобальный not-found в корне pages
+	let globalNotFound: string | undefined
+	for (const ext of opts.extensions) {
+		const notFoundPath = path.resolve(
+			resolvedPagesDir,
+			`${opts.notFoundFileName}.${ext}`
+		)
+		if (fs.existsSync(notFoundPath)) {
+			globalNotFound = `() => import(${JSON.stringify(slash(notFoundPath))})`
+			break
+		}
+	}
 
 	return `// Auto-generated routes manifest
 const manifest = [${entries.join(',\n')}];
 
 export const basePath = ${JSON.stringify(opts.basePath ?? '/')};
+${globalNotFound ? `export const globalNotFound = ${globalNotFound};` : 'export const globalNotFound = undefined;'}
 
 export { manifest };
 export default manifest;

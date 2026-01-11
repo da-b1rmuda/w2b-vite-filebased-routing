@@ -1,5 +1,6 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
+import { ErrorBoundary } from './error-boundary'
 import type { Node } from './types/types'
 
 function wrapLayouts(
@@ -18,7 +19,25 @@ function wrapLayouts(
 	}, pageEl as React.ReactElement)
 }
 
-export const renderManifestAsRoutes = (manifest: Node[]) => {
+function createLoadingFallback(loadingLoader?: () => Promise<{ default: React.ComponentType }>) {
+	if (!loadingLoader) return undefined
+	
+	// Loading компонент lazy, но он используется как fallback в Suspense
+	const Loading = React.lazy(loadingLoader)
+	return <Loading />
+}
+
+function createErrorFallback(errorLoader?: () => Promise<{ default: React.ComponentType<{ error?: Error; resetError?: () => void }> }>) {
+	if (!errorLoader) return undefined
+	
+	const ErrorComponent = React.lazy(errorLoader)
+	return (props: { error?: Error; resetError?: () => void }) => <ErrorComponent {...props} />
+}
+
+export const renderManifestAsRoutes = (
+	manifest: Node[],
+	globalNotFound?: () => Promise<{ default: React.ComponentType }>
+) => {
 	return manifest.map(n => {
 		const Page = React.lazy(async () => {
 			const module = await n.loader()
@@ -61,7 +80,56 @@ export const renderManifestAsRoutes = (manifest: Node[]) => {
 			)
 		})
 
-		const element = wrapLayouts(n.layouts, <Page />)
+		const loadingFallback = createLoadingFallback(n.loading)
+		const errorFallback = createErrorFallback(n.error)
+		
+		const pageElement = wrapLayouts(n.layouts, <Page />)
+		
+		// Оборачиваем в ErrorBoundary если есть error компонент
+		const wrappedElement = errorFallback ? (
+			<ErrorBoundary fallback={errorFallback}>
+				{pageElement}
+			</ErrorBoundary>
+		) : pageElement
+
+		// Оборачиваем в Suspense с loading fallback
+		const element = loadingFallback ? (
+			<React.Suspense fallback={loadingFallback}>
+				{wrappedElement}
+			</React.Suspense>
+		) : (
+			<React.Suspense fallback={<div>Loading...</div>}>
+				{wrappedElement}
+			</React.Suspense>
+		)
+
 		return <Route key={n.id} path={n.path} element={element} />
-	})
+	}).concat(
+		// Добавляем 404 маршрут в конец
+		globalNotFound ? (
+			<Route
+				key="__not_found__"
+				path="*"
+				element={
+					<React.Suspense fallback={<div>Loading...</div>}>
+						{(() => {
+							const NotFound = React.lazy(globalNotFound)
+							return <NotFound />
+						})()}
+					</React.Suspense>
+				}
+			/>
+		) : (
+			<Route
+				key="__not_found__"
+				path="*"
+				element={
+					<div style={{ padding: '20px', textAlign: 'center' }}>
+						<h1>404</h1>
+						<p>Page not found</p>
+					</div>
+				}
+			/>
+		)
+	)
 }

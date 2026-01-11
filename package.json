@@ -1,6 +1,6 @@
 {
 	"name": "path-rush",
-	"version": "1.3.0",
+	"version": "1.4.1",
 	"description": "A simple and powerful plugin for Vite with file-based routing",
 	"main": "dist/plugin.js",
 	"module": "dist/plugin.mjs",
